@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=AutoTimes_Etth1_replication
+#SBATCH --job-name=AutoTimes_Etth1_replication_GPT2
 #SBATCH --partition=spgpu
 #SBATCH --account=jjcorso_owned1
 #SBATCH --time=00-10:00:00
@@ -9,14 +9,15 @@
 #SBATCH --ntasks=1    # Running four tasks
 #SBATCH --cpus-per-gpu=1
 #SBATCH --mem-per-gpu=48GB
-#SBATCH --output=/home/naveenjp/AutoTimes/outputs/new.log
-#SBATCH --error=/home/naveenjp/AutoTimes/errors/new.log
+#SBATCH --output=/home/naveenjp/AutoTimes/outputs/AutoTimes_Etth1_replication_GPT2.log
+#SBATCH --error=/home/naveenjp/AutoTimes/errors/AutoTimes_Etth1_replication_GPT2.log
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=naveenjp@umich.edu
 
-model_name=AutoTimes_Llama
+model_name=AutoTimes_Gpt2
 
 module load python/3.10.4
-module load numpy
-source /env/bin/activate
+
 
 # training one model with a context length
 python -u run.py \
@@ -71,5 +72,5 @@ python -u run.py \
   --tmax 10 \
   --mix_embeds \
   --drop_last \
-  --test_dir /nfs/turbo/coe-jjcorso1/naveenjp/AutoTimes/long_term_forecast_ETTh1_672_96_AutoTimes_Llama_ETTh1_sl672_ll576_tl96_lr0.0005_bt256_wd0_hd256_hl0_cosTrue_mixTrue_test_0
+  --test_dir long_term_forecast_ETTh1_672_96_AutoTimes_Gpt2_ETTh1_sl672_ll576_tl96_lr0.0005_bt256_wd0_hd256_hl0_cosTrue_mixTrue_test_0
 done
