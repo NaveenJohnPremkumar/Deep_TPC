@@ -1,4 +1,5 @@
-from models import AutoTimes_Llama, AutoTimes_Gpt2, AutoTimes_Opt_1b, AutoTimes_Gpt2MM, AutoTimes_Gpt2MM_mix, AutoTimes_LlamaMM, AutoTimes_Gpt2MM_orig, AutoTimes_Gpt2_concatanate
+from models import AutoTimes_Llama, AutoTimes_Gpt2, AutoTimes_Opt_1b, AutoTimes_LlamaMM, AutoTimes_Gpt2_concatanate
+from src.models import DeepTPC, DeepTPC_mix, DeepTPC_orig
 
 
 class Exp_Basic(object):
@@ -9,8 +10,8 @@ class Exp_Basic(object):
             'AutoTimes_LlamaMM': AutoTimes_LlamaMM,
             'AutoTimes_Gpt2': AutoTimes_Gpt2,
             'AutoTimes_Opt_1b': AutoTimes_Opt_1b,
-            'GPT2WithMM': AutoTimes_Gpt2MM,
-            'GPT2WithMM2': AutoTimes_Gpt2MM_mix,
+            'GPT2WithMM': DeepTPC,
+            'GPT2WithMM2': DeepTPC_mix,
             "AutoTimes_Gpt2_concatanate": AutoTimes_Gpt2_concatanate,
             #'GPT2WithMMWithPrompt': AutoTimes_Gpt2MM_orig,
         }

@@ -1,5 +1,4 @@
 #!/bin/bash
-# model_name=AutoTimes_Llama
 model_name=AutoTimes_Gpt2
 
 # training one model with a context length
