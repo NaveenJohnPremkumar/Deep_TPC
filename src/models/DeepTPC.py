@@ -25,13 +25,15 @@ class Model(nn.Module):
         self.mix       = cfg.mix_embeds        
         # Ensure directory exists and contains config + weights
         ckpt_dir = os.path.abspath(cfg.llm_ckp_dir)
-        print("Loading GPT2Model from:", ckpt_dir)
 
         # Auto-download GPT-2 if not present
         config_path = os.path.join(ckpt_dir, "config.json")
         model_path = os.path.join(ckpt_dir, "pytorch_model.bin")
         if not (os.path.exists(config_path) and os.path.exists(model_path)):
-            print("GPT-2 not found locally, downloading...")
+            raise FileNotFoundError(
+                f"GPT-2 checkpoint not found at {ckpt_dir}. "
+                "Download with: transformers.GPT2Model.from_pretrained('gpt2').save_pretrained(ckpt_dir)"
+            )
             # os.makedirs(ckpt_dir, exist_ok=True)
             # base_model = GPT2Model.from_pretrained("gpt2")
             # base_config = GPT2Config.from_pretrained("gpt2")
@@ -119,20 +121,16 @@ class Model(nn.Module):
         )
 
         hid = gpt_out["last_hidden_state"]          # [B·N, token_num, D]
-        # print(hid.shape)
         # 5. decode back to time domain
         dec_out = self.decoder(hid)                     # [B·N, token_num, token_len]
-        # print(dec_out.shape)
         dec_out = dec_out.reshape(B, N, -1)                 # [B, N, token_num*token_len]
         dec_out = dec_out.permute(0, 2, 1)                  # [B, token_num*token_len, N]
-        # print(dec_out.shape)
 
         # 6. denormalise
         dec_out = dec_out * \
             (stdev[:, 0, :].unsqueeze(1).repeat(1, token_num * self.token_len, 1))
         dec_out = dec_out + \
             (means[:, 0, :].unsqueeze(1).repeat(1, token_num * self.token_len, 1))
-        # print(dec_out.shape)
 
         return dec_out
 

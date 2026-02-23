@@ -16,7 +16,6 @@ class Model(nn.Module):
         config_path = os.path.join(ckpt_dir, "config.json")
         model_path = os.path.join(ckpt_dir, "pytorch_model.bin")
         if not (os.path.exists(config_path) and os.path.exists(model_path)):
-            print("GPT-2 not found locally, downloading...")
             os.makedirs(ckpt_dir, exist_ok=True)
             base_model = GPT2Model.from_pretrained("gpt2")
             base_config = GPT2Config.from_pretrained("gpt2")
@@ -173,22 +172,7 @@ class Model(nn.Module):
         # Denormalize
         dec_out = dec_out * stdev[:, 0, :].unsqueeze(1).expand(-1, target_len, -1)
         dec_out = dec_out + means[:, 0, :].unsqueeze(1).expand(-1, target_len, -1)
-        # hid=patch_outputs
-        # dec_out = self.decoder(hid)                     # [B·N, token_num, token_len]
-        # # print(dec_out.shape)
-        # dec_out = dec_out.reshape(bs, n_vars, -1)
-        # dec_out = dec_out.permute(0, 2, 1)                  # [B, token_num*token_len, N]
-        # # print(dec_out.shape)
 
-        # # 6. denormalise
-        # dec_out = dec_out * \
-        #     (stdev[:, 0, :].unsqueeze(1).repeat(1, token_num * self.token_len, 1))
-        # dec_out = dec_out + \
-        #     (means[:, 0, :].unsqueeze(1).repeat(1, token_num * self.token_len, 1))
-        # # print(dec_out.shape)
-
-        # return dec_out
-        
         return dec_out
     
     def forward(self, x_enc, x_mark_enc, x_dec, x_mark_dec, prompt_text):

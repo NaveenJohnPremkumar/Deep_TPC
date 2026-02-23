@@ -23,7 +23,7 @@ if __name__ == '__main__':
     parser.add_argument('--is_training', type=int, required=True, default=1, help='status')
     parser.add_argument('--model_id', type=str, required=True, default='test', help='model id')
     parser.add_argument('--model', type=str, required=True, default='AutoTimes_Llama',
-                        help='model name, options: [AutoTimes_Llama, AutoTimes_Gpt2, AutoTimes_Opt1b]')
+                        help='model name, options: [AutoTimes_Gpt2, AutoTimes_Gpt2_concatanate, GPT2WithMM, GPT2WithMM2, GPT2WithMMWithPrompt]')
 
     # data loader
     parser.add_argument('--data', type=str, required=True, default='ETTm1', help='dataset type')

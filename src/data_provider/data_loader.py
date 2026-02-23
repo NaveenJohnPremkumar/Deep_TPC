@@ -136,7 +136,6 @@ class Dataset_ETT_hour(Dataset):
 
         data_name = self.data_path.split('.')[0]
         self.data_stamp = torch.load(os.path.join(self.root_path, f'{data_name}.pt'))
-        # self.data_stamp = torch.load('/scratch3/home/fbellos/research/AutoTimesWithMM/ETTh1.pt')
         self.data_stamp = self.data_stamp[border1:border2]
         self.data_x = data[border1:border2]
         self.data_y = data[border1:border2]
@@ -357,8 +356,6 @@ class Dataset_Custom(Dataset):
         else:
             data = df_data.values
         data_name = self.data_path.split('.')[0]
-        # pt_path="/scratch3/home/fbellos/research/AutoTimesWithMM/GptPreprocessed_Data"
-        # self.data_stamp = torch.load(os.path.join(pt_path, f'{data_name}.pt'))
         self.data_stamp = torch.load(os.path.join(self.root_path, f'{data_name}.pt'))
         self.data_stamp = self.data_stamp[border1:border2]
         self.data_x = data[border1:border2]
