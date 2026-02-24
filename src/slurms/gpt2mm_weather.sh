@@ -1,9 +1,13 @@
 #!/bin/bash
-model_name=AutoTimes_Gpt2
+
+model_name=GPT2WithMM
+
+module load python/3.10.4
+module load numpy
+#source /nfs/turbo/coe-jjcorso1/naveenjp/AutoTimes/env/bin/activate
 
 # training one model with a context length
-# torchrun --nnodes 1 --nproc-per-node 4 run.py \
-CUDA_VISIBLE_DEVICES=0,1,6,7 torchrun --nnodes 1 --nproc-per-node 4 run.py \
+torchrun --nnodes 1 --nproc-per-node 4 run.py \
   --task_name long_term_forecast \
   --is_training 1 \
   --root_path ./dataset/weather/ \
@@ -19,7 +23,6 @@ CUDA_VISIBLE_DEVICES=0,1,6,7 torchrun --nnodes 1 --nproc-per-node 4 run.py \
   --test_pred_len 96 \
   --batch_size 384 \
   --learning_rate 0.0005 \
-  --mlp_hidden_layers 2 \
   --train_epochs 10 \
   --use_amp \
   --lradj type2 \
@@ -27,13 +30,15 @@ CUDA_VISIBLE_DEVICES=0,1,6,7 torchrun --nnodes 1 --nproc-per-node 4 run.py \
   --mlp_hidden_dim 512 \
   --mlp_activation relu \
   --use_multi_gpu \
-  --llm_ckp_dir /scratch3/home/fbellos/gpt2-large \
-  --mix_embeds
+  --mix_embeds \
+  --mm_layers 0 2 4 6 8 10 \
+  --num_fusion_tokens 20 \
+  --llm_ckp_dir gpt2
 
 # testing the model on all forecast lengths
 for test_pred_len in 96 192 336 720
 do
-CUDA_VISIBLE_DEVICES=0 python -u run.py \
+python -u run.py \
   --task_name long_term_forecast \
   --is_training 0 \
   --root_path ./dataset/weather/ \
@@ -49,7 +54,6 @@ CUDA_VISIBLE_DEVICES=0 python -u run.py \
   --test_pred_len $test_pred_len \
   --batch_size 384 \
   --learning_rate 0.0005 \
-  --mlp_hidden_layers 2 \
   --train_epochs 10 \
   --use_amp \
   --lradj type2 \
@@ -57,7 +61,8 @@ CUDA_VISIBLE_DEVICES=0 python -u run.py \
   --mlp_hidden_dim 512 \
   --mlp_activation relu \
   --mix_embeds \
-  --llm_ckp_dir /scratch3/home/fbellos/gpt2-large \
-  --test_dir long_term_forecast_weather_672_96_AutoTimes_Gpt2_custom_sl672_ll576_tl96_lr0.0005_bt384_wd0_hd512_hl2_cosFalse_mixTrue_Exp_0
+  --mm_layers 0 2 4 6 8 10 \
+  --num_fusion_tokens 20 \
+  --llm_ckp_dir gpt2 \
+  --test_dir long_term_forecast_weather_672_96_GPT2WithMM_custom_sl672_ll576_tl96_lr0.0005_bt384_wd0_hd512_hl2_cosFalse_mixTrue_Exp_0
 done
-  # --llm_ckp_dir gpt2 \

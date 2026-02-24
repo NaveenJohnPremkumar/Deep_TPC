@@ -1,26 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=Gpt2mm_patchtst
-#SBATCH --partition=spgpu
-#SBATCH --account=jjcorso_owned1
-#SBATCH --time=00-10:00:00
-#SBATCH --gpus=1
-#SBATCH --gres=gpu:1
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-gpu=1
-#SBATCH --mem-per-gpu=16GB
-#SBATCH --output=/home/naveenjp/outputs/Gpt2mm_patchtst.log
-#SBATCH --error=/home/naveenjp/errors/Gpt2mm_patchtst.log
-#SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=naveenjp@umich.edu
 
 model_name=GPT2WithMM
 
 module load python/3.10.4
-# module load numpy
-# source /env/bin/activate
+#source /nfs/turbo/coe-jjcorso1/naveenjp/AutoTimes/env/bin/activate
 
-# training
+# training one model with a context length
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
@@ -45,11 +30,11 @@ python -u run.py \
   --tmax 10 \
   --mix_embeds \
   --drop_last \
-  --mm_layers 6 7 8 9 10 11 \
+  --mm_layers 0 2 4 6 8 10 \
   --num_fusion_tokens 20 \
   --llm_ckp_dir gpt2
 
-# testing
+# testing the model on all forecast lengths
 for test_pred_len in 96 192 336 720
 do
 python -u run.py \
@@ -76,8 +61,9 @@ python -u run.py \
   --tmax 10 \
   --mix_embeds \
   --drop_last \
-  --mm_layers 6 7 8 9 10 11 \
+  --mm_layers 0 2 4 6 8 10 \
   --num_fusion_tokens 20 \
   --llm_ckp_dir gpt2 \
-  --test_dir long_term_forecast_ETTh1_672_96_GPT2WithMM_ETTh1_sl672_ll576_tl96_lr0.0005_bt256_wd0_hd128_hl0_cosTrue_mixTrue_test_0
+  --test_dir long_term_forecast_ETTh1_672_96_GPT2WithMM_ETTh1_sl672_ll576_tl96_lr0.0005_bt256_wd0_hd256_hl0_cosTrue_mixTrue_test_0
 done
+

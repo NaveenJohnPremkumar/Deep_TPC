@@ -1,18 +1,4 @@
 #!/bin/bash
-#SBATCH --job-name=Gpt2mm_Solar
-#SBATCH --partition=spgpu
-#SBATCH --account=jjcorso_owned1
-#SBATCH --time=00-10:00:00
-#SBATCH --gpus=4
-#SBATCH --gres=gpu:4
-#SBATCH --nodes=1     # Running on one node
-#SBATCH --ntasks=4    # Running four tasks
-#SBATCH --cpus-per-gpu=1
-#SBATCH --mem-per-gpu=48GB
-#SBATCH --output=/home/naveenjp/outputs/Gpt2mm_Solar.log
-#SBATCH --error=/home/naveenjp/errors/Gpt2mm_Solar.log
-#SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=naveenjp@umich.edu
 
 
 module load python/3.10.4

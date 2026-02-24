@@ -1,9 +1,12 @@
 #!/bin/bash
 
-model_name=GPT2WithMM2
+model_name=GPT2WithMM
+
+module load python/3.10.4
+module load numpy
 
 # training one model with a context length
-CUDA_VISIBLE_DEVICES=0,1,6,7 torchrun --nnodes 1 --nproc-per-node 4 run.py \
+torchrun --nnodes 1 --nproc-per-node 8 run.py \
   --task_name long_term_forecast \
   --is_training 1 \
   --root_path ./dataset/traffic/ \
@@ -18,7 +21,7 @@ CUDA_VISIBLE_DEVICES=0,1,6,7 torchrun --nnodes 1 --nproc-per-node 4 run.py \
   --test_label_len 576 \
   --test_pred_len 96 \
   --batch_size 256 \
-  --learning_rate 0.00005 \
+  --learning_rate 0.0001 \
   --weight_decay 0.00001 \
   --mlp_hidden_dim 1024 \
   --mlp_activation relu \
@@ -27,10 +30,10 @@ CUDA_VISIBLE_DEVICES=0,1,6,7 torchrun --nnodes 1 --nproc-per-node 4 run.py \
   --cosine \
   --tmax 10 \
   --mix_embeds \
-  --mm_layers 5 6 7 8 9 10 11\
-  --num_fusion_tokens 10 \
-  --llm_ckp_dir gpt2 \
-  --use_multi_gpu
+  --use_multi_gpu \
+  --mm_layers 0 2 4 6 8 10 \
+  --num_fusion_tokens 20 \
+  --llm_ckp_dir gpt2
 
 # testing the model on all forecast lengths
 for test_pred_len in 96 192 336 720
@@ -50,7 +53,7 @@ python -u run.py \
   --test_label_len 576 \
   --test_pred_len $test_pred_len \
   --batch_size 256 \
-  --learning_rate 0.00005 \
+  --learning_rate 0.0001 \
   --weight_decay 0.00001 \
   --mlp_hidden_dim 1024 \
   --mlp_activation relu \
@@ -60,9 +63,8 @@ python -u run.py \
   --cosine \
   --tmax 10 \
   --mix_embeds \
-  --mm_layers 5 6 7 8 9 10 11\
-  --num_fusion_tokens 10 \
-  --llm_ckp_dir gpt2 \
-  --test_dir long_term_forecast_traffic_672_96_GPT2WithMM2_custom_sl672_ll576_tl96_lr5e-05_bt256_wd1e-05_hd1024_hl2_cosTrue_mixTrue_test_0
+  --mm_layers 0 2 4 6 8 10 \
+  --num_fusion_tokens 20 \
+  --llm_ckp_dir gpt2
+  --test_dir long_term_forecast_traffic_672_96_GPT2WithMM_custom_sl672_ll576_tl96_lr0.0001_bt256_wd1e-05_hd1024_hl2_cosTrue_mixTrue_test_0
 done
-

@@ -1,18 +1,4 @@
 #!/bin/bash
-#SBATCH --job-name=GPT2mm_Ettm1_replication_GPT2
-#SBATCH --partition=spgpu
-#SBATCH --account=jjcorso_owned1
-#SBATCH --time=00-10:00:00
-#SBATCH --gpus=1
-#SBATCH --gres=gpu:1
-#SBATCH --nodes=1     # Running on one node
-#SBATCH --ntasks=1    # Running four tasks
-#SBATCH --cpus-per-gpu=1
-#SBATCH --mem-per-gpu=48GB
-#SBATCH --output=/home/naveenjp/outputs/GPT2mm_Ettm1_replication_GPT2.log
-#SBATCH --error=/home/naveenjp/errors/GPT2mm_Ettm1_replication_GPT2.log
-#SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=naveenjp@umich.edu
 
 model_name=GPT2WithMMWithPrompt
 
@@ -24,10 +10,10 @@ python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
   --root_path ./dataset/ETT-small/ \
-  --data_path ETTm1.csv \
-  --model_id ETTm1_672_96 \
+  --data_path ETTm2.csv \
+  --model_id ETTm2_672_96 \
   --model $model_name \
-  --data ETTm1 \
+  --data ETTm2 \
   --seq_len 672 \
   --label_len 576 \
   --token_len 96 \
@@ -55,10 +41,10 @@ python -u run.py \
   --task_name long_term_forecast \
   --is_training 0 \
   --root_path ./dataset/ETT-small/ \
-  --data_path ETTm1.csv \
-  --model_id ETTm1_672_96 \
+  --data_path ETTm2.csv \
+  --model_id ETTm2_672_96 \
   --model $model_name \
-  --data ETTm1 \
+  --data ETTm2 \
   --seq_len 672 \
   --label_len 576 \
   --token_len 96 \
@@ -78,5 +64,5 @@ python -u run.py \
   --mm_layers 0 2 4 6 8 10 \
   --num_fusion_tokens 20 \
   --llm_ckp_dir gpt2 \
-  --test_dir long_term_forecast_ETTm1_672_96_GPT2WithMMWithPrompt_ETTm1_sl672_ll576_tl96_lr0.0005_bt256_wd0_hd256_hl0_cosTrue_mixTrue_test_0
+  --test_dir long_term_forecast_ETTm2_672_96_GPT2WithMMWithPrompt_ETTm2_sl672_ll576_tl96_lr0.0005_bt256_wd0_hd256_hl0_cosTrue_mixTrue_test_0
 done
